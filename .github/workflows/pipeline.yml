@@ -45,12 +45,12 @@ jobs:
         with:
           name: data-splits
           path: |
-            Xtrain.csv
-            Xtest.csv
-            ytrain.csv
-            ytest.csv
+            tourism_project/data/Xtrain.csv
+            tourism_project/data/Xtest.csv
+            tourism_project/data/ytrain.csv
+            tourism_project/data/ytest.csv
 
-  model-traning:
+  model-training:
     needs: data-prep
     runs-on: ubuntu-latest
     steps:
@@ -64,16 +64,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: data-splits
+          path: tourism_project/data/
       - name: Start MLflow Server
         run: |
           nohup mlflow ui --host 0.0.0.0 --port 5000 &  # Run MLflow UI in the background
-          sleep 5  # Wait for a moment to let the server starts
+          sleep 5  # Wait for a moment to let the server start
       - name: Model Building
         run: python tourism_project/model_building/train.py
       - name: Commit Trained Model
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add <add_code_here>   # path to the saved model file
+          # ✅ FIXED: Targeted the correct joblib model location
+          git add tourism_project/deployment/best_tourism_predictor_model_v1.joblib
           git commit -m "Add trained model [skip ci]" || echo "No changes to commit"
           git push
