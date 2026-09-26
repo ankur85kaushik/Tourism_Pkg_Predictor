@@ -87,7 +87,7 @@ with mlflow.start_run():
     })
 
 print("Training complete! Metrics successfully logged to MLflow.")
-
+os.makedirs("tourism_project/deployment", exist_ok=True)
 # Save next to app.py so the Streamlit app can load it directly, and log
 # it as an MLflow artifact for traceability
 model_path = "tourism_project/deployment/best_tourism_predictor_model_v1.joblib"
